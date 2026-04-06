@@ -68,27 +68,8 @@ const services = [
 
 const caseStudies: CaseStudy[] = [
   {
-    id: "solutech",
-    eyebrow: "Project 01 · Product Design",
-    title: "Solutech Limited — Designing a Sales Automation Platform Built for African Field Teams",
-    role: "Product Designer",
-    category: "Product Strategy · Enterprise UX · Sales Enablement",
-    summary:
-      "I worked as the product designer helping shape a sales automation experience used by teams operating across African markets. The challenge was translating the complexity of field sales, van sales, order workflows, merchandising, and reporting into a system that felt fast, usable, and decision-ready for distributed teams.",
-    problem:
-      "Sales and distribution operations often involve fragmented visibility, slow reporting loops, and workflow friction between teams in the field and decision-makers in-office. In environments where speed and clarity matter, poor product experience can slow down execution and reduce trust in the data itself.",
-    approach:
-      "I focused on simplifying operational complexity into clear task flows, modular dashboards, practical information hierarchy, and interfaces that support both action and oversight. The design emphasis was not just beauty, but confidence: helping users know what matters, what to do next, and where performance is trending.",
-    outcome:
-      "The resulting product direction supports easier field execution, better visibility, and stronger adoption of sales automation workflows in real operating environments. Solutech publicly positions the platform around AI-powered sales and distribution efficiency, enterprise adoption, and cross-country scale, which makes usability and trust central to the product value proposition.",
-    impact: ["5,000+ field users", "120+ enterprise customers", "13+ countries served"],
-    image:
-      "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/solutech_e4cfcbc9.webp",
-    imageAlt: "Solutech sales automation website and dashboard preview",
-  },
-  {
     id: "catalyst",
-    eyebrow: "Project 02 · Data-Rich Product Design",
+    eyebrow: "Project 01 · Data-Rich Product Design",
     title: "Catalyst Explorer — Making Complex Governance Data Searchable, Understandable, and Actionable",
     role: "Lead Product Designer",
     category: "Information Architecture · Research UX · Discovery Systems",
@@ -107,7 +88,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "cats",
-    eyebrow: "Project 03 · Art Direction",
+    eyebrow: "Project 02 · Art Direction",
     title: "Cardano Africa Tech Summit — Art Direction for a Continental Builder Ecosystem",
     role: "Art Direction Lead",
     category: "Event Identity · Campaign Design · Experience Communication",
@@ -126,7 +107,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "blockchain-centre",
-    eyebrow: "Project 04 · Brand Identity",
+    eyebrow: "Project 03 · Brand Identity",
     title: "Blockchain Centre Nairobi — Building a Brand for a Web3 Learning and Community Hub",
     role: "Brand Identity Director",
     category: "Brand Strategy · Identity Systems · Community Design",
@@ -144,13 +125,32 @@ const caseStudies: CaseStudy[] = [
     imageAlt: "Blockchain Centre Nairobi interior and brand environment",
   },
   {
+    id: "solutech",
+    eyebrow: "Project 04 · Product Design",
+    title: "Solutech Limited — Designing a Sales Automation Platform Built for African Field Teams",
+    role: "Product Designer",
+    category: "Product Strategy · Enterprise UX · Sales Enablement",
+    summary:
+      "I worked as the product designer helping shape a sales automation experience used by teams operating across African markets. The challenge was translating the complexity of field sales, van sales, order workflows, merchandising, and reporting into a system that felt fast, usable, and decision-ready for distributed teams.",
+    problem:
+      "Sales and distribution operations often involve fragmented visibility, slow reporting loops, and workflow friction between teams in the field and decision-makers in-office. In environments where speed and clarity matter, poor product experience can slow down execution and reduce trust in the data itself.",
+    approach:
+      "I focused on simplifying operational complexity into clear task flows, modular dashboards, practical information hierarchy, and interfaces that support both action and oversight. The design emphasis was not just beauty, but confidence: helping users know what matters, what to do next, and where performance is trending.",
+    outcome:
+      "The resulting product direction supports easier field execution, better visibility, and stronger adoption of sales automation workflows in real operating environments. Solutech publicly positions the platform around AI-powered sales and distribution efficiency, enterprise adoption, and cross-country scale, which makes usability and trust central to the product value proposition.",
+    impact: ["5,000+ field users", "120+ enterprise customers", "13+ countries served"],
+    image:
+      "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/solutech_e4cfcbc9.webp",
+    imageAlt: "Solutech sales automation website and dashboard preview",
+  },
+  {
     id: "shelfsense",
     eyebrow: "Project 05 · Concept Product",
-    title: "ShelfSense RT — A Real-Time Expiry Intelligence Concept for Modern Retail",
+    title: "ShelfSence — A Real-Time Expiry Intelligence Concept for Modern Retail",
     role: "Product Strategist · UX Designer",
     category: "Concept Design · Retail Operations · Service Innovation",
     summary:
-      "ShelfSense RT is a concept solution designed to help supermarkets reduce expiry losses by combining smart shelf monitoring, batch-level tracking, prioritised staff alerts, and actionable inventory workflows.",
+      "ShelfSence is a concept solution designed to help supermarkets reduce expiry losses by combining smart shelf monitoring, batch-level tracking, prioritised staff alerts, and actionable inventory workflows.",
     problem:
       "Expiring products often remain unnoticed until markdown windows are missed or waste has already occurred. Store teams may have inventory data, but not always the visibility, timing, or prioritisation needed at shelf level.",
     approach:
@@ -388,9 +388,9 @@ export default function Home() {
             <div className="relative">
               <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_25px_70px_rgba(0,0,0,0.25)]">
                 <img
-                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/preston-profile_ff541e3f.webp"
-                  alt="Public speaker profile section featuring Preston Odep"
-                  className="h-[28rem] w-full object-cover object-top"
+                  src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/prescartoon_77b8f724.png"
+                  alt="Cartoon illustration of Preston Odep"
+                  className="h-[28rem] w-full object-contain object-center"
                 />
               </div>
               <div className="absolute -bottom-6 right-6 max-w-xs rounded-[1.5rem] border border-primary/30 bg-primary px-5 py-4 text-primary-foreground shadow-[0_20px_50px_rgba(202,255,51,0.22)]">
