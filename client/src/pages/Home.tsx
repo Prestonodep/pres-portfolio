@@ -335,9 +335,9 @@ export default function Home() {
               <div className="relative min-h-[28rem] p-6 md:min-h-[38rem] md:p-8">
                 <div className="absolute inset-y-0 right-0 w-full md:w-[76%]">
                   <img
-                    src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/preston-hero-editorial-v2-MPSyT2swSQVtdGM5zqtryV.webp"
-                    alt="Editorial portrait visual for Preston Odep's portfolio hero section"
-                    className="absolute bottom-0 right-0 h-full w-full object-contain object-right-bottom"
+                    src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/Presintro_57af09ff.png"
+                    alt="Preston Odep portrait for portfolio hero section"
+                    className="absolute bottom-0 right-0 h-full w-full object-cover object-center"
                   />
                 </div>
                 <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,22,31,0.84)_0%,rgba(18,22,31,0.62)_33%,rgba(18,22,31,0.18)_60%,rgba(18,22,31,0.04)_100%)]" />
