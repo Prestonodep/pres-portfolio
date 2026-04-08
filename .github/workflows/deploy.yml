@@ -34,6 +34,6 @@ jobs:
           password: ${{ secrets.DREAMHOST_PASSWORD }}
           server: ${{ secrets.DREAMHOST_SERVER }}
           local_path: './dist/*'
-          remote_path: '/home/YOUR_DREAMHOST_USER/preston.medisession.co.ke'
+          remote_path: '/home/${{ secrets.DREAMHOST_USERNAME }}/preston.medisession.co.ke'
           sftp_only: true
           delete: true
