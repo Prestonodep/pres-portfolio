@@ -457,6 +457,53 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="border-y border-primary/30 bg-primary/8 py-24">
+          <div className="container">
+            <p className="section-label">Recognition & Milestones</p>
+            <h2 className="section-heading mt-4">
+              Achievements that <span className="italic text-primary">matter</span>
+            </h2>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  <span className="text-lg font-bold">🎤</span>
+                </div>
+                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
+                  Speaker at Cardano Africa Tech Summit
+                </h3>
+                <p className="mt-4 text-base leading-7 text-muted-foreground">
+                  Shared insights and expertise on design and product strategy at a major continental technology event bringing together builders and ecosystem leaders.
+                </p>
+              </article>
+
+              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  <span className="text-lg font-bold">⭐</span>
+                </div>
+                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
+                  Team Player of the Year
+                </h3>
+                <p className="mt-4 text-base leading-7 text-muted-foreground">
+                  Recognized for collaboration, reliability, and commitment to supporting team goals and fostering a positive working environment.
+                </p>
+              </article>
+
+              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  <span className="text-lg font-bold">🏆</span>
+                </div>
+                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
+                  Culture Champion (2x)
+                </h3>
+                <p className="mt-4 text-base leading-7 text-muted-foreground">
+                  Recognized twice for championing inclusive values, supporting team wellbeing, and contributing to a thriving organizational culture.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section id="services" className="container py-24">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
