@@ -5,7 +5,6 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import { ScrollIndicator } from "./components/ScrollIndicator";
 
 /*
 Design Philosophy Reminder — App Shell
@@ -29,7 +28,6 @@ function App() {
       <ThemeProvider defaultTheme="dark" switchable>
         <TooltipProvider>
           <Toaster />
-          <ScrollIndicator />
           <Router />
         </TooltipProvider>
       </ThemeProvider>
