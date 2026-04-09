@@ -16,7 +16,6 @@ import {
   SunMedium,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useSmoothScrollNav, NavLink } from "@/components/SmoothScrollNav";
 
 type CaseStudy = {
   id: string;
@@ -228,7 +227,6 @@ const aboutTags = [
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const [selectedCaseStudyId, setSelectedCaseStudyId] = useState(caseStudies[0].id);
-  const { navLinks, activeSection, handleNavClick } = useSmoothScrollNav();
 
   const selectedCaseStudy = useMemo(
     () => caseStudies.find((study) => study.id === selectedCaseStudyId) ?? caseStudies[0],
@@ -255,16 +253,12 @@ export default function Home() {
             </div>
           </a>
 
-          <nav className="hidden items-center gap-7 text-sm font-medium lg:flex">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.id}
-                label={link.label}
-                href={link.href}
-                isActive={activeSection === link.id}
-                onClick={(e) => handleNavClick(e, link.href)}
-              />
-            ))}
+          <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground lg:flex">
+            <a href="#about" className="transition-colors hover:text-foreground">About</a>
+            <a href="#work" className="transition-colors hover:text-foreground">Work</a>
+            <a href="#services" className="transition-colors hover:text-foreground">Services</a>
+            <a href="#skills" className="transition-colors hover:text-foreground">Skills</a>
+            <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
           </nav>
 
           <div className="flex items-center gap-3">
