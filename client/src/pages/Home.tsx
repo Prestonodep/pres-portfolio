@@ -3,9 +3,14 @@ Design Philosophy Reminder — Home Page
 Editorial Noir with Electric Lime Accents: oversized Playfair Display headlines, Plus Jakarta Sans body copy,
 asymmetric editorial composition, restrained acid-lime emphasis, cool slate section breaks, premium motion,
 and evidence-led storytelling. Every section should feel art-directed, never generic.
+
+Layout note: from `lg` up this page reads left-to-right. Each <Panel> is one viewport-wide stop on a
+horizontal track driven by useHorizontalDeck; below `lg` the identical markup stacks vertically again.
+Because a panel is one screen, tall material is split across several panels rather than compressed —
+About becomes intro + facts, and Work becomes an index followed by one panel per case study.
 */
 
-import { useMemo, useState } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import {
   ArrowRight,
   CalendarClock,
@@ -16,6 +21,8 @@ import {
   SunMedium,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useHorizontalDeck } from "@/hooks/useHorizontalDeck";
+import { cn } from "@/lib/utils";
 
 type CaseStudy = {
   id: string;
@@ -34,6 +41,14 @@ type CaseStudy = {
 
 const mailtoHref =
   "mailto:prestonodep@gmail.com?subject=Hey%20Pres,%20landed%20on%20your%20web%20portfolio";
+
+const navLinks = [
+  { id: "about", label: "About" },
+  { id: "work", label: "Work" },
+  { id: "services", label: "Services" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+] as const;
 
 const services = [
   {
@@ -224,24 +239,57 @@ const aboutTags = [
   "Inclusive Design",
 ] as const;
 
+const aboutStats = [
+  { value: "8+", label: "Years in design" },
+  { value: "5", label: "Disciplines practiced" },
+  { value: "Africa", label: "Primary market focus" },
+] as const;
+
+type PanelProps = {
+  id: string;
+  nav: string;
+  className?: string;
+  children: ReactNode;
+};
+
+/*
+One stop on the deck. `data-panel` is what the controller steps between, `data-nav` tells the
+header which link to light up. Vertical padding below lg, fixed-chrome insets above it.
+*/
+function Panel({ id, nav, className, children }: PanelProps) {
+  return (
+    <section
+      id={id}
+      data-panel=""
+      data-nav={nav}
+      className={cn(
+        "relative w-full py-16 lg:flex lg:h-full lg:w-screen lg:shrink-0 lg:snap-start lg:flex-col lg:justify-center lg:overflow-y-auto lg:pt-[var(--deck-top)] lg:pb-[var(--deck-bottom)]",
+        className,
+      )}
+    >
+      {children}
+    </section>
+  );
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
-  const [selectedCaseStudyId, setSelectedCaseStudyId] = useState(caseStudies[0].id);
+  const { trackRef, scrollToId, activeNav, progress } = useHorizontalDeck();
 
-  const selectedCaseStudy = useMemo(
-    () => caseStudies.find((study) => study.id === selectedCaseStudyId) ?? caseStudies[0],
-    [selectedCaseStudyId],
-  );
+  const handleJump = (event: MouseEvent<HTMLElement>, id: string) => {
+    event.preventDefault();
+    scrollToId(id);
+  };
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+    <div className="relative flex min-h-screen flex-col bg-background text-foreground selection:bg-primary selection:text-primary-foreground lg:h-full lg:min-h-0 lg:overflow-hidden">
       <div className="pointer-events-none fixed inset-0 opacity-70">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(202,255,51,0.12),transparent_22%),radial-gradient(circle_at_12%_16%,rgba(74,95,190,0.12),transparent_24%),linear-gradient(to_bottom,transparent,rgba(0,0,0,0.02))] dark:bg-[radial-gradient(circle_at_top_right,rgba(202,255,51,0.13),transparent_22%),radial-gradient(circle_at_12%_16%,rgba(74,95,190,0.16),transparent_24%),linear-gradient(to_bottom,transparent,rgba(255,255,255,0.02))]" />
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl lg:fixed lg:inset-x-0 lg:top-0">
         <div className="container flex items-center justify-between gap-6 py-4">
-          <a href="#hero" className="group inline-flex items-center gap-3">
+          <a href="#hero" onClick={(event) => handleJump(event, "hero")} className="group inline-flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-full border border-primary/30 bg-primary/10 text-sm font-bold text-primary transition-transform duration-300 group-hover:scale-105">
               P
             </span>
@@ -254,11 +302,20 @@ export default function Home() {
           </a>
 
           <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground lg:flex">
-            <a href="#about" className="transition-colors hover:text-foreground">About</a>
-            <a href="#work" className="transition-colors hover:text-foreground">Work</a>
-            <a href="#services" className="transition-colors hover:text-foreground">Services</a>
-            <a href="#skills" className="transition-colors hover:text-foreground">Skills</a>
-            <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(event) => handleJump(event, link.id)}
+                aria-current={activeNav === link.id ? "true" : undefined}
+                className={cn(
+                  "transition-colors hover:text-foreground",
+                  activeNav === link.id && "text-foreground",
+                )}
+              >
+                {link.label}
+              </a>
+            ))}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -272,6 +329,7 @@ export default function Home() {
             </button>
             <a
               href="#contact"
+              onClick={(event) => handleJump(event, "contact")}
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
             >
               Email Me
@@ -279,100 +337,124 @@ export default function Home() {
             </a>
           </div>
         </div>
+
+        {/* travel indicator — only meaningful once the deck is horizontal */}
+        <div className="absolute inset-x-0 bottom-0 hidden h-[3px] bg-border/50 lg:block">
+          <div
+            className="h-full bg-primary shadow-[0_0_18px_rgba(202,255,51,0.5)] transition-[width] duration-300 ease-out"
+            style={{ width: `${Math.max(progress * 100, 2)}%` }}
+          />
+        </div>
       </header>
 
-      <main className="relative z-10">
-        <section id="hero" className="container grid gap-12 py-16 lg:min-h-[calc(100vh-88px)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
-          <div>
-            <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-border bg-card/80 px-4 py-2 text-sm text-muted-foreground shadow-sm">
-              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_18px_rgba(202,255,51,0.8)]" />
-              Hi, I&apos;m Preston Odep
-            </div>
-            <h1 className="max-w-4xl font-display text-[clamp(3.4rem,10vw,7rem)] font-black leading-[0.92] tracking-[-0.05em] text-foreground">
-              Multi-Disciplinary
-              <span className="block italic text-primary">Designer</span>
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-              I design products, brands, and digital experiences that help ambitious teams across Africa
-              communicate clearly, move faster, and earn trust. Over the last 8+ years, I’ve worked across
-              product strategy, UI/UX, brand systems, websites, and event design to turn complex ideas
-              into experiences people can actually use.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <a
-                href="#work"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
-              >
-                View My Work
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <a
-                href={mailtoHref}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:text-primary"
-              >
-                Email Me
-              </a>
-            </div>
-            <div className="mt-10 flex flex-wrap items-center gap-5 border-l-2 border-primary/30 pl-5">
-              <div>
-                <p className="font-display text-3xl font-black tracking-tight">8+</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Years experience</p>
+      {/* Smoothing is applied per scroll call in useHorizontalDeck, not via CSS scroll-behavior. */}
+      <main
+        ref={trackRef}
+        className="deck-track relative z-10 lg:flex lg:h-screen lg:snap-x lg:snap-mandatory lg:overflow-x-auto lg:overflow-y-hidden"
+      >
+        <Panel id="hero" nav="hero">
+          <div className="container grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-border bg-card/80 px-4 py-2 text-sm text-muted-foreground shadow-sm">
+                <span className="inline-flex h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_18px_rgba(202,255,51,0.8)]" />
+                Hi, I&apos;m Preston Odep
               </div>
-              <div className="h-12 w-px bg-border" />
-              <div>
-                <p className="font-display text-3xl font-black tracking-tight">Nairobi</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Kenya based</p>
+              <h1 className="hero-title max-w-4xl">
+                Multi-Disciplinary
+                <span className="block italic text-primary">Designer</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground lg:text-[0.95rem] lg:leading-7">
+                I design products, brands, and digital experiences that help ambitious teams across Africa
+                communicate clearly, move faster, and earn trust. Over the last 8+ years, I’ve worked across
+                product strategy, UI/UX, brand systems, websites, and event design to turn complex ideas
+                into experiences people can actually use.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <a
+                  href="#work"
+                  onClick={(event) => handleJump(event, "work")}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
+                >
+                  View My Work
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href={mailtoHref}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:text-primary"
+                >
+                  Email Me
+                </a>
+              </div>
+              <div className="mt-10 flex flex-wrap items-center gap-5 border-l-2 border-primary/30 pl-5 lg:mt-8">
+                <div>
+                  <p className="font-display text-3xl font-black tracking-tight">8+</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Years experience</p>
+                </div>
+                <div className="h-12 w-px bg-border" />
+                <div>
+                  <p className="font-display text-3xl font-black tracking-tight">Nairobi</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Kenya based</p>
+                </div>
+              </div>
+
+              <p className="mt-8 hidden items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-muted-foreground lg:inline-flex">
+                Scroll sideways
+                <ArrowRight className="deck-arrow h-4 w-4 text-primary" />
+              </p>
+            </div>
+
+            <div>
+              <div className="relative overflow-hidden rounded-[2rem] border border-[#232733]/70 bg-[linear-gradient(135deg,#243f6f_0%,#1c2740_58%,#12161f_100%)] text-white shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(202,255,51,0.14),transparent_18%),radial-gradient(circle_at_80%_18%,rgba(255,255,255,0.08),transparent_20%)]" />
+                <div className="absolute right-6 top-6 z-10 rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-md">
+                  Available for select projects
+                </div>
+                <div className="relative min-h-[28rem] p-6 md:min-h-[38rem] md:p-8 lg:min-h-[clamp(26rem,66vh,34rem)]">
+                  <div className="absolute inset-y-0 right-0 w-full md:w-[76%]">
+                    <img
+                      src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/Presintro_57af09ff.png"
+                      alt="Preston Odep portrait for portfolio hero section"
+                      className="absolute bottom-0 right-0 h-full w-full object-cover object-center"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,22,31,0.84)_0%,rgba(18,22,31,0.62)_33%,rgba(18,22,31,0.18)_60%,rgba(18,22,31,0.04)_100%)]" />
+                  <div className="relative flex h-full flex-col justify-end">
+                    <div className="max-w-sm rounded-[1.7rem] border border-white/10 bg-black/22 p-6 backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+                      <p className="text-[0.7rem] uppercase tracking-[0.24em] text-primary">Researcher · Designer · Strategist</p>
+                      <h3 className="mt-4 font-display text-4xl font-black tracking-tight text-white lg:text-3xl">
+                        Building experiences that turn complexity into clarity.
+                      </h3>
+                      <p className="mt-4 text-sm leading-7 text-white/76">
+                        I work across product strategy, UI/UX, identity, and websites with a systems-aware approach shaped for real-world adoption.
+                      </p>
+                    </div>
+
+                    <div className="mt-6 grid gap-4 sm:max-w-xl sm:grid-cols-2">
+                      <div className="rounded-2xl border border-white/10 bg-white/8 p-4 backdrop-blur-sm">
+                        <p className="text-[0.7rem] uppercase tracking-[0.2em] text-white/70">Focus</p>
+                        <p className="mt-2 text-sm font-medium leading-6 text-white/88">
+                          Product strategy, UI/UX, brand identity, websites, and art direction.
+                        </p>
+                      </div>
+                      <div className="rounded-2xl border border-primary/30 bg-primary/12 p-4 backdrop-blur-sm">
+                        <p className="text-[0.7rem] uppercase tracking-[0.2em] text-primary">Based in</p>
+                        <p className="mt-2 text-sm font-medium leading-6 text-white/88">
+                          Nairobi, Kenya — designing for African users, teams, and ecosystems.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+        </Panel>
 
-          <div>
-            <div className="relative overflow-hidden rounded-[2rem] border border-[#232733]/70 bg-[linear-gradient(135deg,#243f6f_0%,#1c2740_58%,#12161f_100%)] text-white shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(202,255,51,0.14),transparent_18%),radial-gradient(circle_at_80%_18%,rgba(255,255,255,0.08),transparent_20%)]" />
-              <div className="absolute right-6 top-6 z-10 rounded-full border border-white/12 bg-white/10 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-md">
-                Available for select projects
-              </div>
-              <div className="relative min-h-[28rem] p-6 md:min-h-[38rem] md:p-8">
-                <div className="absolute inset-y-0 right-0 w-full md:w-[76%]">
-                  <img
-                    src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/Presintro_57af09ff.png"
-                    alt="Preston Odep portrait for portfolio hero section"
-                    className="absolute bottom-0 right-0 h-full w-full object-cover object-center"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,22,31,0.84)_0%,rgba(18,22,31,0.62)_33%,rgba(18,22,31,0.18)_60%,rgba(18,22,31,0.04)_100%)]" />
-                <div className="relative flex h-full flex-col justify-end">
-                  <div className="max-w-sm rounded-[1.7rem] border border-white/10 bg-black/22 p-6 backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
-                    <p className="text-[0.7rem] uppercase tracking-[0.24em] text-primary">Researcher · Designer · Strategist</p>
-                    <h3 className="mt-4 font-display text-4xl font-black tracking-tight text-white">
-                      Building experiences that turn complexity into clarity.
-                    </h3>
-                    <p className="mt-4 text-sm leading-7 text-white/76">
-                      I work across product strategy, UI/UX, identity, and websites with a systems-aware approach shaped for real-world adoption.
-                    </p>
-                  </div>
-
-                  <div className="mt-6 grid gap-4 sm:max-w-xl sm:grid-cols-2">
-                    <div className="rounded-2xl border border-white/10 bg-white/8 p-4 backdrop-blur-sm">
-                      <p className="text-[0.7rem] uppercase tracking-[0.2em] text-white/70">Focus</p>
-                      <p className="mt-2 text-sm font-medium leading-6 text-white/88">
-                        Product strategy, UI/UX, brand identity, websites, and art direction.
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-primary/30 bg-primary/12 p-4 backdrop-blur-sm">
-                      <p className="text-[0.7rem] uppercase tracking-[0.2em] text-primary">Based in</p>
-                      <p className="mt-2 text-sm font-medium leading-6 text-white/88">
-                        Nairobi, Kenya — designing for African users, teams, and ecosystems.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="overflow-hidden border-y border-primary/30 bg-primary py-4 text-primary-foreground">
+        {/* Lime ticker: a horizontal band when stacked, a vertical rail between deck panels. */}
+        <section
+          aria-hidden="true"
+          className="overflow-hidden border-y border-primary/30 bg-primary py-4 text-primary-foreground lg:hidden"
+        >
           <div className="ticker-track flex min-w-max gap-8 whitespace-nowrap text-sm font-bold uppercase tracking-[0.25em]">
             {[...tickerItems, ...tickerItems].map((item, index) => (
               <span key={`${item}-${index}`} className="inline-flex items-center gap-8 px-2">
@@ -383,14 +465,28 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="bg-[#1f232e] py-24 text-white dark:bg-[#171a23]">
+        <div
+          aria-hidden="true"
+          className="hidden overflow-hidden border-x border-primary/30 bg-primary text-primary-foreground lg:block lg:h-full lg:w-24 lg:shrink-0"
+        >
+          <div className="ticker-rail whitespace-nowrap py-6 text-center text-sm font-bold uppercase tracking-[0.25em] [writing-mode:vertical-rl]">
+            {[...tickerItems, ...tickerItems].map((item, index) => (
+              <span key={`${item}-rail-${index}`}>
+                {item}
+                <span className="mx-8 text-primary-foreground/50">✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <Panel id="about" nav="about" className="bg-[#1f232e] text-white dark:bg-[#171a23]">
           <div className="container grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
             <div className="relative">
               <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-[0_25px_70px_rgba(0,0,0,0.25)]">
                 <img
                   src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/prescartoon_77b8f724.png"
                   alt="Cartoon illustration of Preston Odep"
-                  className="h-[28rem] w-full object-contain object-center"
+                  className="h-[28rem] w-full object-contain object-center lg:h-[clamp(20rem,52vh,26rem)]"
                 />
               </div>
               <div className="absolute -bottom-6 right-6 max-w-xs rounded-[1.5rem] border border-primary/30 bg-primary px-5 py-4 text-primary-foreground shadow-[0_20px_50px_rgba(202,255,51,0.22)]">
@@ -407,7 +503,7 @@ export default function Home() {
                 Senior <span className="italic text-primary">multi-disciplinary</span>
                 <br /> designer
               </h2>
-              <div className="mt-8 space-y-6 text-[1rem] leading-8 text-[#c9d0de]">
+              <div className="mt-8 space-y-6 text-[1rem] leading-8 text-[#c9d0de] lg:mt-6 lg:space-y-4 lg:text-[0.95rem] lg:leading-7">
                 <p>
                   Hellooo, I’m <strong className="text-white">Preston Odep</strong> — a multi-disciplinary
                   designer based in <strong className="text-white">Nairobi, Kenya</strong>. I build meaningful
@@ -427,133 +523,91 @@ export default function Home() {
                   is the best team ever and Messi is the <strong className="text-white">G.O.A.T.</strong>
                 </p>
               </div>
-
-              <div className="mt-10 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
-                  <p className="font-display text-3xl font-black text-white">8+</p>
-                  <p className="mt-2 text-sm text-[#c9d0de]">Years in design</p>
-                </div>
-                <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
-                  <p className="font-display text-3xl font-black text-white">5</p>
-                  <p className="mt-2 text-sm text-[#c9d0de]">Disciplines practiced</p>
-                </div>
-                <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
-                  <p className="font-display text-3xl font-black text-white">Africa</p>
-                  <p className="mt-2 text-sm text-[#c9d0de]">Primary market focus</p>
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {aboutTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.18em] text-[#dce2ef]"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
-        </section>
+        </Panel>
 
-        <section className="border-y border-primary/30 bg-primary/8 py-24">
+        <Panel id="about-facts" nav="about" className="bg-[#1f232e] text-white dark:bg-[#171a23]">
           <div className="container">
-            <p className="section-label">Recognition & Milestones</p>
-            <h2 className="section-heading mt-4">
-              Achievements that <span className="italic text-primary">matter</span>
+            <p className="section-label text-white/65">The Short Version</p>
+            <h2 className="section-heading mt-4 text-white">
+              Range, built on <span className="italic text-primary">practice</span>
             </h2>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
-                  <span className="text-lg font-bold">🎤</span>
+            <div className="mt-12 grid gap-5 sm:grid-cols-3">
+              {aboutStats.map((stat) => (
+                <div key={stat.label} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-7">
+                  <p className="font-display text-[clamp(2.6rem,4vw,4rem)] font-black leading-none text-white">
+                    {stat.value}
+                  </p>
+                  <p className="mt-4 text-sm uppercase tracking-[0.18em] text-[#c9d0de]">{stat.label}</p>
                 </div>
-                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
-                  Speaker at Cardano Africa Tech Summit
-                </h3>
-                <p className="mt-4 text-base leading-7 text-muted-foreground">
-                  Shared insights and expertise on design and product strategy at a major continental technology event bringing together builders and ecosystem leaders.
-                </p>
-              </article>
-
-              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
-                  <span className="text-lg font-bold">⭐</span>
-                </div>
-                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
-                  Team Player of the Year
-                </h3>
-                <p className="mt-4 text-base leading-7 text-muted-foreground">
-                  Recognized for collaboration, reliability, and commitment to supporting team goals and fostering a positive working environment.
-                </p>
-              </article>
-
-              <article className="group rounded-[2rem] border border-border bg-card p-8 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
-                  <span className="text-lg font-bold">🏆</span>
-                </div>
-                <h3 className="font-display text-2xl font-black tracking-tight text-card-foreground">
-                  Culture Champion (2x)
-                </h3>
-                <p className="mt-4 text-base leading-7 text-muted-foreground">
-                  Recognized twice for championing inclusive values, supporting team wellbeing, and contributing to a thriving organizational culture.
-                </p>
-              </article>
+              ))}
             </div>
-          </div>
-        </section>
 
-        <section id="services" className="container py-24">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="section-label">What I Do</p>
-              <h2 className="section-heading mt-4">
-                Strategic services built for <span className="italic text-primary">clarity</span>
-              </h2>
-            </div>
-            <p className="max-w-xl text-base leading-8 text-muted-foreground">
-              I work across product, brand, and digital touchpoints, but always with the same principle:
-              make the experience clearer, more useful, and more believable than it was before.
+            <p className="mt-12 text-xs font-semibold uppercase tracking-[0.26em] text-white/50">
+              Disciplines I practice
             </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {aboutTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-xs uppercase tracking-[0.18em] text-[#dce2ef]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
+        </Panel>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-2">
-            {services.map((service) => (
-              <article
-                key={service.title}
-                className="group rounded-[2rem] border border-border bg-card p-7 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                      {service.number}
-                    </p>
-                    <h3 className="mt-4 font-display text-3xl font-black tracking-tight text-card-foreground">
-                      {service.title}
-                    </h3>
+        <Panel id="services" nav="services">
+          <div className="container">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="section-label">What I Do</p>
+                <h2 className="section-heading mt-4">
+                  Strategic services built for <span className="italic text-primary">clarity</span>
+                </h2>
+              </div>
+              <p className="max-w-xl text-base leading-8 text-muted-foreground lg:text-sm lg:leading-7">
+                I work across product, brand, and digital touchpoints, but always with the same principle:
+                make the experience clearer, more useful, and more believable than it was before.
+              </p>
+            </div>
+
+            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-8 lg:grid-cols-4">
+              {services.map((service) => (
+                <article
+                  key={service.title}
+                  className="group flex flex-col rounded-[2rem] border border-border bg-card p-7 shadow-[0_18px_45px_rgba(0,0,0,0.06)] transition-transform duration-300 hover:-translate-y-1 lg:p-5"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                    {service.number}
+                  </p>
+                  <h3 className="mt-4 font-display text-3xl font-black tracking-tight text-card-foreground lg:mt-3 lg:text-2xl">
+                    {service.title}
+                  </h3>
+                  <p className="mt-4 flex-1 text-base leading-8 text-muted-foreground lg:mt-3 lg:text-sm lg:leading-6">
+                    {service.description}
+                  </p>
+                  <div className="mt-6 flex flex-wrap gap-2.5 lg:mt-4">
+                    {service.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-border bg-background px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.18em] text-muted-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                  <div className="rounded-full border border-border bg-muted px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Service
-                  </div>
-                </div>
-                <p className="mt-5 text-base leading-8 text-muted-foreground">{service.description}</p>
-                <div className="mt-6 flex flex-wrap gap-2.5">
-                  {service.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border bg-background px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
+            </div>
           </div>
-        </section>
+        </Panel>
 
-        <section id="work" className="bg-[#f4f2ea] py-24 text-[#101114] dark:bg-[#0f1116] dark:text-white">
+        <Panel id="work" nav="work" className="bg-[#f4f2ea] text-[#101114] dark:bg-[#0f1116] dark:text-white">
           <div className="container">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
@@ -563,117 +617,116 @@ export default function Home() {
                   <span className="italic text-primary"> strategy, and conversion thinking</span>
                 </h2>
               </div>
-              <p className="max-w-2xl text-base leading-8 text-[#50525a] dark:text-white/70">
+              <p className="max-w-2xl text-base leading-8 text-[#50525a] dark:text-white/70 lg:text-sm lg:leading-7">
                 This selection balances enterprise UX, data-rich product design, art direction, community
                 branding, and concept-driven service innovation. Each story is framed to explain the business
                 problem, the design response, and the value created.
               </p>
             </div>
 
-            <div className="mt-12 grid gap-6 xl:grid-cols-[0.44fr_0.56fr]">
-              <div className="space-y-4">
-                {caseStudies.map((study, index) => {
-                  const active = selectedCaseStudy.id === study.id;
-                  return (
-                    <button
-                      key={study.id}
-                      type="button"
-                      onClick={() => setSelectedCaseStudyId(study.id)}
-                      className={`w-full rounded-[1.75rem] border p-6 text-left transition-all duration-300 ${
-                        active
-                          ? "border-primary bg-[#101114] text-white shadow-[0_20px_55px_rgba(0,0,0,0.22)] dark:bg-[#171a23]"
-                          : "border-black/10 bg-white text-[#111217] hover:-translate-y-0.5 hover:border-primary/40 dark:border-white/10 dark:bg-[#171a23] dark:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <span className={`text-xs font-semibold uppercase tracking-[0.22em] ${active ? "text-primary" : "text-[#666b75] dark:text-white/55"}`}>
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <ChevronRight className={`h-4 w-4 transition-transform ${active ? "translate-x-0 text-primary" : "text-[#666b75] dark:text-white/55"}`} />
-                      </div>
-                      <h3 className="mt-4 font-display text-2xl font-black tracking-tight">{study.title}</h3>
-                      <p className={`mt-4 text-sm leading-7 ${active ? "text-white/75" : "text-[#4f525a] dark:text-white/70"}`}>
-                        {study.summary}
-                      </p>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <article className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_25px_70px_rgba(0,0,0,0.08)] dark:border-white/10 dark:bg-[#171a23]">
-                <img
-                  src={selectedCaseStudy.image}
-                  alt={selectedCaseStudy.imageAlt}
-                  className="h-72 w-full object-cover object-center md:h-96"
-                />
-                <div className="p-7 md:p-9">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                    {selectedCaseStudy.eyebrow}
-                  </p>
-                  <h3 className="mt-4 font-display text-4xl font-black tracking-tight text-[#111217] dark:text-white">
-                    {selectedCaseStudy.title}
+            {/* 3-up keeps the index tidy whether the list runs to five projects or six */}
+            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:mt-8 lg:grid-cols-3">
+              {caseStudies.map((study, index) => (
+                <button
+                  key={study.id}
+                  type="button"
+                  onClick={(event) => handleJump(event, `case-${study.id}`)}
+                  className="group flex h-full flex-col rounded-[1.5rem] border border-black/10 bg-white p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 dark:border-white/10 dark:bg-[#171a23]"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#666b75] dark:text-white/55">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <ChevronRight className="h-4 w-4 text-[#666b75] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary dark:text-white/55" />
+                  </div>
+                  <h3 className="mt-4 font-display text-xl font-black leading-tight tracking-tight">
+                    {study.title.split(" — ")[0]}
                   </h3>
-
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-[1.4rem] border border-black/10 bg-[#f7f6f2] p-4 dark:border-white/10 dark:bg-[#11141b]">
-                      <p className="text-[0.7rem] uppercase tracking-[0.2em] text-[#72757e] dark:text-white/55">Role</p>
-                      <p className="mt-2 text-sm font-semibold text-[#111217] dark:text-white">{selectedCaseStudy.role}</p>
-                    </div>
-                    <div className="rounded-[1.4rem] border border-black/10 bg-[#f7f6f2] p-4 dark:border-white/10 dark:bg-[#11141b]">
-                      <p className="text-[0.7rem] uppercase tracking-[0.2em] text-[#72757e] dark:text-white/55">Category</p>
-                      <p className="mt-2 text-sm font-semibold text-[#111217] dark:text-white">{selectedCaseStudy.category}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 space-y-6 text-base leading-8 text-[#474a52] dark:text-white/72">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Summary</p>
-                      <p className="mt-3">{selectedCaseStudy.summary}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Problem</p>
-                      <p className="mt-3">{selectedCaseStudy.problem}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Approach</p>
-                      <p className="mt-3">{selectedCaseStudy.approach}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Outcome</p>
-                      <p className="mt-3">{selectedCaseStudy.outcome}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    {selectedCaseStudy.impact.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </article>
+                  <p className="mt-3 flex-1 text-xs uppercase tracking-[0.16em] text-[#666b75] dark:text-white/50">
+                    {study.role}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
-        </section>
+        </Panel>
 
-        <section id="skills" className="bg-[#12151d] py-24 text-white">
-          <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        {caseStudies.map((study) => (
+          <Panel
+            key={study.id}
+            id={`case-${study.id}`}
+            nav="work"
+            className="bg-[#f4f2ea] text-[#101114] dark:bg-[#0f1116] dark:text-white"
+          >
+            <div className="container grid gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:items-center">
+              <div className="overflow-hidden rounded-[2rem] border border-black/10 shadow-[0_25px_70px_rgba(0,0,0,0.12)] dark:border-white/10">
+                <img
+                  src={study.image}
+                  alt={study.imageAlt}
+                  className="h-72 w-full object-cover object-center md:h-96 lg:h-[clamp(22rem,58vh,32rem)]"
+                />
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{study.eyebrow}</p>
+                <h3 className="mt-4 font-display text-[clamp(1.8rem,2.5vw,2.5rem)] font-black leading-[1.03] tracking-tight lg:mt-2">
+                  {study.title}
+                </h3>
+
+                <div className="mt-5 flex flex-wrap gap-3 text-xs lg:mt-4">
+                  <span className="rounded-full border border-black/10 bg-white px-4 py-2 font-semibold uppercase tracking-[0.16em] text-[#4f525a] dark:border-white/10 dark:bg-[#171a23] dark:text-white/70">
+                    {study.role}
+                  </span>
+                  <span className="rounded-full border border-black/10 bg-white px-4 py-2 font-semibold uppercase tracking-[0.16em] text-[#4f525a] dark:border-white/10 dark:bg-[#171a23] dark:text-white/70">
+                    {study.category}
+                  </span>
+                </div>
+
+                <div className="mt-7 grid gap-x-8 gap-y-6 text-[#474a52] dark:text-white/72 sm:grid-cols-2 lg:mt-4 lg:gap-y-4">
+                  {(
+                    [
+                      ["Summary", study.summary],
+                      ["Problem", study.problem],
+                      ["Approach", study.approach],
+                      ["Outcome", study.outcome],
+                    ] as const
+                  ).map(([label, body]) => (
+                    <div key={label}>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{label}</p>
+                      <p className="case-copy mt-2.5">{body}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-7 flex flex-wrap gap-3 lg:mt-4">
+                  {study.impact.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Panel>
+        ))}
+
+        <Panel id="skills" nav="skills" className="bg-[#12151d] text-white">
+          <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <p className="section-label text-white/55">Expertise</p>
               <h2 className="section-heading mt-4 text-white">
                 Education &amp; <span className="italic text-primary">My Skills</span>
               </h2>
-              <p className="mt-6 max-w-xl text-base leading-8 text-white/68">
+              <p className="mt-6 max-w-xl text-base leading-8 text-white/68 lg:text-sm lg:leading-7">
                 Eight-plus years of craft across fintech, Web3, events, brand systems, and digital product
                 design — with enough breadth to move between discovery and delivery without losing strategic
                 depth.
               </p>
 
-              <div className="mt-10 space-y-6">
+              <div className="mt-10 space-y-6 lg:mt-8 lg:space-y-4">
                 {skillBars.map((skill) => (
                   <div key={skill.label}>
                     <div className="mb-2 flex items-center justify-between gap-4 text-sm">
@@ -709,162 +762,171 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </Panel>
 
-        <section id="process" className="container py-24">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="section-label">How I Work</p>
-              <h2 className="section-heading mt-4">
-                My design <span className="italic text-primary">process</span>
-              </h2>
+        <Panel id="process" nav="skills">
+          <div className="container">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="section-label">How I Work</p>
+                <h2 className="section-heading mt-4">
+                  My design <span className="italic text-primary">process</span>
+                </h2>
+              </div>
+              <p className="max-w-xl text-base leading-8 text-muted-foreground lg:text-sm lg:leading-7">
+                Every strong outcome starts with the right framing. My process is designed to move from
+                ambiguity to alignment, then from alignment to execution.
+              </p>
             </div>
-            <p className="max-w-xl text-base leading-8 text-muted-foreground">
-              Every strong outcome starts with the right framing. My process is designed to move from
-              ambiguity to alignment, then from alignment to execution.
-            </p>
-          </div>
 
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {process.map((step) => (
-              <article
-                key={step.number}
-                className="rounded-[1.8rem] border border-border bg-card p-6 shadow-[0_18px_45px_rgba(0,0,0,0.06)]"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-display text-3xl font-black text-primary">{step.number}</span>
-                  <div className="rounded-full border border-border bg-muted px-3 py-1 text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
-                    Process
+            <div className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-8 lg:grid-cols-4">
+              {process.map((step) => (
+                <article
+                  key={step.number}
+                  className="rounded-[1.8rem] border border-border bg-card p-6 shadow-[0_18px_45px_rgba(0,0,0,0.06)]"
+                >
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-display text-3xl font-black text-primary">{step.number}</span>
+                    <div className="rounded-full border border-border bg-muted px-3 py-1 text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground">
+                      Process
+                    </div>
                   </div>
-                </div>
-                <h3 className="mt-5 font-display text-3xl font-black tracking-tight text-card-foreground">
-                  {step.title}
-                </h3>
-                <p className="mt-4 text-base leading-8 text-muted-foreground">{step.text}</p>
-              </article>
-            ))}
+                  <h3 className="mt-5 font-display text-3xl font-black tracking-tight text-card-foreground lg:text-2xl">
+                    {step.title}
+                  </h3>
+                  <p className="mt-4 text-base leading-8 text-muted-foreground lg:text-sm lg:leading-7">{step.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </section>
+        </Panel>
 
-        <section className="border-y border-primary/30 bg-primary py-20 text-primary-foreground">
+        <Panel id="cta" nav="contact" className="border-y border-primary/30 bg-primary text-primary-foreground">
           <div className="container flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary-foreground/70">
                 Available for Projects
               </p>
-              <h2 className="mt-4 max-w-4xl font-display text-[clamp(2.8rem,7vw,5.3rem)] font-black leading-[0.95] tracking-[-0.04em]">
+              <h2 className="mt-4 max-w-4xl font-display text-[clamp(2.8rem,6vw,5rem)] font-black leading-[0.95] tracking-[-0.04em]">
                 Let’s build something that feels clear, credible, and hard to ignore
               </h2>
             </div>
             <a
               href={mailtoHref}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#111217] px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-black"
+              className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#111217] px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-black lg:self-auto"
             >
               Email Me
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
-        </section>
+        </Panel>
 
-        <section id="contact" className="container py-24">
-          <p className="section-label">Get In Touch</p>
-          <h2 className="section-heading mt-4">
-            Contact <span className="italic text-primary">Me</span>
-          </h2>
+        <Panel id="contact" nav="contact">
+          <div className="container">
+            <p className="section-label">Get In Touch</p>
+            <h2 className="section-heading mt-4">
+              Contact <span className="italic text-primary">Me</span>
+            </h2>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="rounded-[2rem] border border-border bg-card p-8 shadow-[0_20px_60px_rgba(0,0,0,0.07)]">
-              <p className="text-base leading-8 text-muted-foreground">
-                Whether you need a product designer, a brand system, or a sharper digital presence, I’m
-                open to thoughtful projects and meaningful collaborations.
-              </p>
+            <div className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+              <div className="rounded-[2rem] border border-border bg-card p-8 shadow-[0_20px_60px_rgba(0,0,0,0.07)] lg:p-6">
+                <p className="text-base leading-8 text-muted-foreground lg:text-sm lg:leading-7">
+                  Whether you need a product designer, a brand system, or a sharper digital presence, I’m
+                  open to thoughtful projects and meaningful collaborations.
+                </p>
 
-              <div className="mt-8 space-y-5">
-                <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
-                  <div className="grid h-11 w-11 place-items-center rounded-full bg-primary/12 text-primary">
-                    <Mail className="h-5 w-5" />
+                <div className="mt-8 space-y-5 lg:mt-6 lg:space-y-3">
+                  <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Email</p>
+                      <a href={mailtoHref} className="mt-2 inline-flex items-center gap-2 text-base font-semibold text-foreground hover:text-primary">
+                        Email Me
+                        <ArrowRight className="h-4 w-4" />
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Email</p>
-                    <a href={mailtoHref} className="mt-2 inline-flex items-center gap-2 text-base font-semibold text-foreground hover:text-primary">
-                      Email Me
-                      <ArrowRight className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
 
-                <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
-                  <div className="grid h-11 w-11 place-items-center rounded-full bg-primary/12 text-primary">
-                    <CalendarClock className="h-5 w-5" />
+                  <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
+                      <CalendarClock className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Availability</p>
+                      <p className="mt-2 text-base font-semibold text-foreground">Open to new projects</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Availability</p>
-                    <p className="mt-2 text-base font-semibold text-foreground">Open to new projects</p>
-                  </div>
-                </div>
 
-                <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
-                  <div className="grid h-11 w-11 place-items-center rounded-full bg-primary/12 text-primary">
-                    <MapPin className="h-5 w-5" />
+                  <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
+                      <MapPin className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Based In</p>
+                      <p className="mt-2 text-base font-semibold text-foreground">Nairobi, Kenya</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Based In</p>
-                    <p className="mt-2 text-base font-semibold text-foreground">Nairobi, Kenya</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-[2rem] border border-border bg-[#12151d] p-8 text-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary">Best for</p>
-              <h3 className="mt-4 font-display text-4xl font-black tracking-tight">
-                Designers aren’t hired for polish alone.
-              </h3>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-white/70">
-                They’re hired because the work helps a product make sense, a brand feel believable, or a
-                digital experience move people closer to action. If that is what you need, let’s talk.
-              </p>
-
-              <div className="mt-10 grid gap-4 sm:grid-cols-2">
-                <div className="rounded-[1.35rem] border border-white/10 bg-white/5 p-5">
-                  <p className="text-[0.72rem] uppercase tracking-[0.2em] text-white/55">Ideal engagements</p>
-                  <p className="mt-3 text-sm leading-7 text-white/80">
-                    Product discovery, portfolio refreshes, brand direction, marketing sites, and systems-led UX.
-                  </p>
-                </div>
-                <div className="rounded-[1.35rem] border border-white/10 bg-white/5 p-5">
-                  <p className="text-[0.72rem] uppercase tracking-[0.2em] text-white/55">Preferred approach</p>
-                  <p className="mt-3 text-sm leading-7 text-white/80">
-                    Clear goals, collaborative communication, practical timelines, and work that must perform beyond presentation slides.
-                  </p>
                 </div>
               </div>
 
-              <a
-                href={mailtoHref}
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.25)]"
-              >
-                Email Me
-                <ArrowRight className="h-4 w-4" />
-              </a>
+              <div className="overflow-hidden rounded-[2rem] border border-border bg-[#12151d] p-8 text-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] lg:p-6">
+                <p className="text-xs uppercase tracking-[0.22em] text-primary">Best for</p>
+                <h3 className="mt-4 font-display text-4xl font-black tracking-tight lg:text-3xl">
+                  Designers aren’t hired for polish alone.
+                </h3>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-white/70 lg:text-sm lg:leading-7">
+                  They’re hired because the work helps a product make sense, a brand feel believable, or a
+                  digital experience move people closer to action. If that is what you need, let’s talk.
+                </p>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-6">
+                  <div className="rounded-[1.35rem] border border-white/10 bg-white/5 p-5">
+                    <p className="text-[0.72rem] uppercase tracking-[0.2em] text-white/55">Ideal engagements</p>
+                    <p className="mt-3 text-sm leading-7 text-white/80 lg:leading-6">
+                      Product discovery, portfolio refreshes, brand direction, marketing sites, and systems-led UX.
+                    </p>
+                  </div>
+                  <div className="rounded-[1.35rem] border border-white/10 bg-white/5 p-5">
+                    <p className="text-[0.72rem] uppercase tracking-[0.2em] text-white/55">Preferred approach</p>
+                    <p className="mt-3 text-sm leading-7 text-white/80 lg:leading-6">
+                      Clear goals, collaborative communication, practical timelines, and work that must perform beyond presentation slides.
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href={mailtoHref}
+                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.25)] lg:mt-6"
+                >
+                  Email Me
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
-        </section>
+        </Panel>
       </main>
 
-      <footer className="border-t border-border bg-card/60 backdrop-blur-sm">
-        <div className="container flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between">
+      <footer className="relative z-40 border-t border-border bg-card/80 backdrop-blur-md lg:fixed lg:inset-x-0 lg:bottom-0">
+        <div className="container flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:py-3">
           <div>
-            <p className="font-display text-3xl font-black tracking-tight text-card-foreground">Preston.</p>
-            <p className="mt-2 text-sm text-muted-foreground">Designed with intention in Nairobi, Kenya</p>
+            <p className="font-display text-3xl font-black tracking-tight text-card-foreground lg:text-xl">Preston.</p>
+            <p className="mt-2 text-sm text-muted-foreground lg:hidden">Designed with intention in Nairobi, Kenya</p>
           </div>
 
           <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-muted-foreground">
-            <a href="#about" className="transition-colors hover:text-foreground">About</a>
-            <a href="#work" className="transition-colors hover:text-foreground">Work</a>
-            <a href="#services" className="transition-colors hover:text-foreground">Services</a>
-            <a href="#skills" className="transition-colors hover:text-foreground">Skills</a>
-            <a href="#contact" className="transition-colors hover:text-foreground">Contact</a>
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(event) => handleJump(event, link.id)}
+                className="transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ))}
             <a
               href="https://www.linkedin.com/in/preston-odep/"
               target="_blank"
