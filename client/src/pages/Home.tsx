@@ -13,6 +13,7 @@ About becomes intro + facts, and Work becomes an index followed by one panel per
 import type { MouseEvent, ReactNode } from "react";
 import {
   ArrowRight,
+  ArrowUpRight,
   CalendarClock,
   ChevronRight,
   Mail,
@@ -35,6 +36,7 @@ type CaseStudy = {
   approach: string;
   outcome: string;
   impact: string[];
+  liveUrl?: string;
   image: string;
   imageAlt: string;
 };
@@ -97,6 +99,7 @@ const caseStudies: CaseStudy[] = [
     outcome:
       "Public descriptions of Catalyst Explorer highlight its role in making proposal data, filters, profiles, charts, assessments, and community accountability easier to access and understand. The design opportunity was therefore to create trust through structure, and usability through clarity.",
     impact: ["Deep research journeys", "Search-led exploration", "Clearer accountability visibility"],
+    liveUrl: "https://www.catalystexplorer.com/en/",
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/catalyst_8635dba2.webp",
     imageAlt: "Catalyst Explorer interface with search and navigation panels",
@@ -116,6 +119,7 @@ const caseStudies: CaseStudy[] = [
     outcome:
       "The summit publicly frames itself as a multi-day journey connecting hackathons, onboarding, community, policy, and ecosystem growth in Nairobi. That visibility made cohesive art direction especially important for trust, memorability, and momentum across audiences.",
     impact: ["Multi-day event system", "Builder-focused visual identity", "High-visibility ecosystem storytelling"],
+    liveUrl: "https://cats.wada.org/",
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/cats_b8c2b757.webp",
     imageAlt: "Cardano Africa Tech Summit event website and hero artwork",
@@ -135,6 +139,7 @@ const caseStudies: CaseStudy[] = [
     outcome:
       "Blockchain Centre Nairobi publicly presents itself as a hub for blockchain learning, events, collaboration, hackathons, and builder community in Nairobi. The identity therefore had to support place-making as much as communication, helping people understand not only what the centre looks like, but what it stands for.",
     impact: ["Community-first positioning", "Physical + digital brand expression", "Welcoming but credible identity system"],
+    liveUrl: "https://www.blockchaincentrenbo.com/",
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/blockchain-centre_be718c7a.webp",
     imageAlt: "Blockchain Centre Nairobi interior and brand environment",
@@ -154,6 +159,7 @@ const caseStudies: CaseStudy[] = [
     outcome:
       "The resulting product direction supports easier field execution, better visibility, and stronger adoption of sales automation workflows in real operating environments. Solutech publicly positions the platform around AI-powered sales and distribution efficiency, enterprise adoption, and cross-country scale, which makes usability and trust central to the product value proposition.",
     impact: ["5,000+ field users", "120+ enterprise customers", "13+ countries served"],
+    liveUrl: "https://solutech.co.ke/",
     image:
       "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/solutech_e4cfcbc9.webp",
     imageAlt: "Solutech sales automation website and dashboard preview",
@@ -707,6 +713,26 @@ export default function Home() {
                       {item}
                     </span>
                   ))}
+                </div>
+
+                {/* Live link when the project is public; static badge while it is not */}
+                <div className="mt-7 lg:mt-5">
+                  {study.liveUrl ? (
+                    <a
+                      href={study.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View ${study.title.split(" — ")[0]} live in a new tab`}
+                      className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
+                    >
+                      View Live Project
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-semibold text-[#666b75] dark:border-white/10 dark:bg-[#171a23] dark:text-white/55">
+                      Coming Soon
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
