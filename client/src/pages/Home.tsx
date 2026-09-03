@@ -16,7 +16,7 @@ import {
   ArrowUpRight,
   CalendarClock,
   ChevronRight,
-  Mail,
+  Linkedin,
   MapPin,
   Moon,
   SunMedium,
@@ -25,6 +25,7 @@ import { Link } from "wouter";
 import { Wordmark } from "@/components/Wordmark";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useHorizontalDeck } from "@/hooks/useHorizontalDeck";
+import { chatCtaLabel, linkedInHref } from "@/lib/links";
 import { cn } from "@/lib/utils";
 
 type CaseStudy = {
@@ -44,9 +45,6 @@ type CaseStudy = {
   image: string;
   imageAlt: string;
 };
-
-const mailtoHref =
-  "mailto:prestonodep@gmail.com?subject=Hey%20Pres,%20landed%20on%20your%20web%20portfolio";
 
 const navLinks = [
   { id: "about", label: "About" },
@@ -354,12 +352,13 @@ export default function Home() {
               {theme === "dark" ? <SunMedium className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <a
-              href="#contact"
-              onClick={(event) => handleJump(event, "contact")}
+              href={linkedInHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
             >
-              Email Me
-              <ArrowRight className="h-4 w-4" />
+              {chatCtaLabel}
+              <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -405,10 +404,13 @@ export default function Home() {
                   <ArrowRight className="h-4 w-4" />
                 </a>
                 <a
-                  href={mailtoHref}
+                  href={linkedInHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-border bg-transparent px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:text-primary"
                 >
-                  Email Me
+                  {chatCtaLabel}
+                  <ArrowUpRight className="h-4 w-4" />
                 </a>
               </div>
               <div className="mt-10 flex flex-wrap items-center gap-5 border-l-2 border-primary/30 pl-5 lg:mt-8">
@@ -880,11 +882,13 @@ export default function Home() {
               </h2>
             </div>
             <a
-              href={mailtoHref}
+              href={linkedInHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#111217] px-7 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-black lg:self-auto"
             >
-              Email Me
-              <ArrowRight className="h-4 w-4" />
+              {chatCtaLabel}
+              <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
         </Panel>
@@ -906,13 +910,18 @@ export default function Home() {
                 <div className="mt-8 space-y-5 lg:mt-6 lg:space-y-3">
                   <div className="flex items-start gap-4 rounded-[1.25rem] border border-border bg-background p-4">
                     <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/12 text-primary">
-                      <Mail className="h-5 w-5" />
+                      <Linkedin className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Email</p>
-                      <a href={mailtoHref} className="mt-2 inline-flex items-center gap-2 text-base font-semibold text-foreground hover:text-primary">
-                        Email Me
-                        <ArrowRight className="h-4 w-4" />
+                      <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">LinkedIn</p>
+                      <a
+                        href={linkedInHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center gap-2 text-base font-semibold text-foreground hover:text-primary"
+                      >
+                        Preston Odep
+                        <ArrowUpRight className="h-4 w-4" />
                       </a>
                     </div>
                   </div>
@@ -965,11 +974,13 @@ export default function Home() {
                 </div>
 
                 <a
-                  href={mailtoHref}
+                  href={linkedInHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.25)] lg:mt-6"
                 >
-                  Email Me
-                  <ArrowRight className="h-4 w-4" />
+                  {chatCtaLabel}
+                  <ArrowUpRight className="h-4 w-4" />
                 </a>
               </div>
             </div>

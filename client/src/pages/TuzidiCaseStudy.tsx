@@ -11,10 +11,8 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Moon, SunMedium } from "lucide-rea
 import { Link } from "wouter";
 import { Wordmark } from "@/components/Wordmark";
 import { useTheme } from "@/contexts/ThemeContext";
+import { chatCtaLabel, linkedInHref } from "@/lib/links";
 import { cn } from "@/lib/utils";
-
-const mailtoHref =
-  "mailto:prestonodep@gmail.com?subject=Hey%20Pres,%20landed%20on%20your%20web%20portfolio";
 
 const meta = [
   { label: "Role", value: "Brand & Product Designer" },
@@ -204,11 +202,13 @@ export default function TuzidiCaseStudy() {
               {theme === "dark" ? <SunMedium className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <a
-              href={mailtoHref}
+              href={linkedInHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
             >
-              Email Me
-              <ArrowRight className="h-4 w-4" />
+              {chatCtaLabel}
+              <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
         </div>
@@ -288,6 +288,28 @@ export default function TuzidiCaseStudy() {
                 className="rise aspect-[3/2] w-full rounded-[2rem] object-cover"
               />
             </div>
+          </div>
+        </section>
+
+        {/* Identity in the wild — billboard above, app icon below. */}
+        <section className="container pb-24 md:pb-32">
+          <div className="flex flex-col gap-5">
+            <img
+              src="/brand/Tuzidi-Billboard.webp"
+              alt="A Tuzidi billboard above a city street, carrying the mark and the line “Lets Goo Nairobi. Tuzidi!”"
+              width={1920}
+              height={1081}
+              loading="lazy"
+              className="rise w-full rounded-[2rem] object-cover"
+            />
+            <img
+              src="/brand/Tuzidi-Icon.webp"
+              alt="The Tuzidi app icon on an iPhone home screen, the four-bar mark in white on red"
+              width={1368}
+              height={1058}
+              loading="lazy"
+              className="rise w-full rounded-[2rem] object-cover"
+            />
           </div>
         </section>
 
@@ -430,6 +452,29 @@ export default function TuzidiCaseStudy() {
               ))}
             </div>
 
+            {/*
+            The spec plates behind those numbers. Full width rather than two-up: both are
+            fine-line documentation, and at half width the icon grid stops being readable.
+            */}
+            <div className="mt-16 flex flex-col gap-5 md:mt-20">
+              <img
+                src="/brand/design-system.webp"
+                alt="Tuzidi design system documentation — the typographic scale beside the button and link variants"
+                width={1920}
+                height={1080}
+                loading="lazy"
+                className="rise w-full rounded-[2rem] border border-border object-cover"
+              />
+              <img
+                src="/brand/iconography.webp"
+                alt="The Tuzidi icon set laid out as a grid"
+                width={1920}
+                height={1080}
+                loading="lazy"
+                className="rise w-full rounded-[2rem] border border-border object-cover"
+              />
+            </div>
+
             <div className="mt-24 grid gap-10 sm:grid-cols-2 md:mt-28 md:grid-cols-4 md:gap-8">
               {systemScreens.map((screen) => (
                 <Phone key={screen.src} {...screen} />
@@ -466,11 +511,13 @@ export default function TuzidiCaseStudy() {
               </Link>
             </div>
             <a
-              href={mailtoHref}
+              href={linkedInHref}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)] md:self-auto"
             >
-              Email Me
-              <ArrowRight className="h-4 w-4" />
+              {chatCtaLabel}
+              <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
         </section>
