@@ -3,8 +3,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { usePageViews } from "./hooks/usePageViews";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import TuzidiCaseStudy from "./pages/TuzidiCaseStudy";
 
 /*
 Design Philosophy Reminder — App Shell
@@ -13,9 +15,12 @@ but preserve switchable dark mode with consistent semantic colors.
 */
 
 function Router() {
+  usePageViews();
+
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/work/tuzidi" component={TuzidiCaseStudy} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

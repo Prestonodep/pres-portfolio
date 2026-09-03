@@ -22,6 +22,13 @@ export function useHorizontalDeck() {
   const [activeNav, setActiveNav] = useState("hero");
   const [progress, setProgress] = useState(0);
 
+  // The document-level scroll lock belongs to the deck, not to the app: any page that is an
+  // ordinary vertical document (a case study, say) must be able to scroll normally.
+  useEffect(() => {
+    document.documentElement.classList.add("deck-active");
+    return () => document.documentElement.classList.remove("deck-active");
+  }, []);
+
   useEffect(() => {
     const query = window.matchMedia(DECK_MEDIA);
     const apply = () => setIsDeck(query.matches);

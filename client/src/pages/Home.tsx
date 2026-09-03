@@ -21,6 +21,7 @@ import {
   Moon,
   SunMedium,
 } from "lucide-react";
+import { Link } from "wouter";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useHorizontalDeck } from "@/hooks/useHorizontalDeck";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,8 @@ type CaseStudy = {
   outcome: string;
   impact: string[];
   liveUrl?: string;
+  /* internal route to a full case study page, when one exists */
+  caseUrl?: string;
   image: string;
   imageAlt: string;
 };
@@ -85,8 +88,27 @@ const services = [
 
 const caseStudies: CaseStudy[] = [
   {
+    id: "tuzidi",
+    eyebrow: "Project 01 · Brand Identity & Product Design",
+    title: "Tuzidi — A Ride-Hailing and Delivery Marketplace Built for How Nairobi Actually Moves",
+    role: "Brand & Product Designer",
+    category: "Brand Identity · Product Design · Design Systems",
+    summary:
+      "Tuzidi is a ride-hailing and delivery marketplace for Nairobi. I designed the identity and the product together — the four-bar mark and its motion system alongside eighteen screens covering both sides of the marketplace.",
+    problem:
+      "Hailing assumes a rider will come to you, and that the price will be whatever the algorithm decides in that moment. Neither holds well in Nairobi: riders are already travelling known corridors, and surge pricing lands hardest on the people with the least room to absorb it.",
+    approach:
+      "I designed around corridors rather than pickups: you attach to a stream already going your way and can see how much supply is on it before committing, and pricing resolves to three published bands. The identity carries the same idea — four bars staggered thirty degrees off vertical, movement held mid-stride, never a single arrow, because Tuzidi is many riders on one corridor.",
+    outcome:
+      "One app serves both sides of the market. Loyalty is minted face to face: a point exists only once the passenger scans the driver's code at the end of a trip, so nothing is credited silently. The system shipped as eighteen screens, nineteen components, and fifteen brand documents.",
+    impact: ["No surge · three published prices", "Both sides in one app", "18 screens · 19 components"],
+    caseUrl: "/work/tuzidi",
+    image: "/tuzidi/images/tuzidi-delivery.webp",
+    imageAlt: "A Tuzidi courier moving through Nairobi",
+  },
+  {
     id: "catalyst",
-    eyebrow: "Project 01 · Data-Rich Product Design",
+    eyebrow: "Project 02 · Data-Rich Product Design",
     title: "Catalyst Explorer — Making Complex Governance Data Searchable, Understandable, and Actionable",
     role: "Lead Product Designer",
     category: "Information Architecture · Research UX · Discovery Systems",
@@ -106,7 +128,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "cats",
-    eyebrow: "Project 02 · Art Direction",
+    eyebrow: "Project 03 · Art Direction",
     title: "Cardano Africa Tech Summit — Art Direction for a Continental Builder Ecosystem",
     role: "Art Direction Lead",
     category: "Event Identity · Campaign Design · Experience Communication",
@@ -126,7 +148,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "blockchain-centre",
-    eyebrow: "Project 03 · Brand Identity",
+    eyebrow: "Project 04 · Brand Identity",
     title: "Blockchain Centre Nairobi — Building a Brand for a Web3 Learning and Community Hub",
     role: "Brand Identity Director",
     category: "Brand Strategy · Identity Systems · Community Design",
@@ -146,7 +168,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "solutech",
-    eyebrow: "Project 04 · Product Design",
+    eyebrow: "Project 05 · Product Design",
     title: "Solutech Limited — Designing a Sales Automation Platform Built for African Field Teams",
     role: "Product Designer",
     category: "Product Strategy · Enterprise UX · Sales Enablement",
@@ -166,7 +188,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     id: "supashoppa",
-    eyebrow: "Project 05 · Concept Product",
+    eyebrow: "Project 06 · Concept Product",
     title: "SupaShoppa — Turning Retail Shopping Into a Transferable Digital Asset",
     role: "Product Strategist · UX Designer",
     category: "Concept Design · Fintech UX · Retail & Payments",
@@ -619,7 +641,7 @@ export default function Home() {
               <div>
                 <p className="section-label text-[#54555d] dark:text-white/60">Recent Work</p>
                 <h2 className="section-heading mt-4 text-[#101114] dark:text-white">
-                  Five selected projects that show range,
+                  Six selected projects that show range,
                   <span className="italic text-primary"> strategy, and conversion thinking</span>
                 </h2>
               </div>
@@ -688,7 +710,7 @@ export default function Home() {
                   </span>
                 </div>
 
-                <div className="mt-7 grid gap-x-8 gap-y-6 text-[#474a52] dark:text-white/72 sm:grid-cols-2 lg:mt-4 lg:gap-y-4">
+                <div className="mt-7 grid gap-x-8 gap-y-6 text-[#474a52] dark:text-white/72 sm:grid-cols-2 lg:mt-4 lg:gap-y-3">
                   {(
                     [
                       ["Summary", study.summary],
@@ -715,23 +737,45 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Live link when the project is public; static badge while it is not */}
-                <div className="mt-7 lg:mt-5">
+                {/*
+                Full case study takes the lime button when one exists, since it is the deeper
+                read; the live site then steps back to a secondary link. Projects with neither
+                keep the static badge.
+                */}
+                <div className="mt-7 flex flex-wrap items-center gap-3 lg:mt-4">
+                  {study.caseUrl && (
+                    <Link
+                      href={study.caseUrl}
+                      aria-label={`View the full ${study.title.split(" — ")[0]} case study`}
+                      className="case-cta inline-flex items-center gap-2 rounded-full bg-primary font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
+                    >
+                      View Project
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+
                   {study.liveUrl ? (
                     <a
                       href={study.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`View ${study.title.split(" — ")[0]} live in a new tab`}
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]"
+                      className={cn(
+                        "case-cta inline-flex items-center gap-2 rounded-full font-semibold transition-all duration-300 hover:-translate-y-0.5",
+                        study.caseUrl
+                          ? "border border-black/10 bg-white text-[#111217] hover:border-primary/50 hover:text-primary dark:border-white/10 dark:bg-[#171a23] dark:text-white"
+                          : "bg-primary text-primary-foreground hover:shadow-[0_12px_30px_rgba(202,255,51,0.28)]",
+                      )}
                     >
                       View Live Project
                       <ArrowUpRight className="h-4 w-4" />
                     </a>
                   ) : (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-semibold text-[#666b75] dark:border-white/10 dark:bg-[#171a23] dark:text-white/55">
-                      Coming Soon
-                    </span>
+                    !study.caseUrl && (
+                      <span className="case-cta inline-flex items-center gap-2 rounded-full border border-black/10 bg-white font-semibold text-[#666b75] dark:border-white/10 dark:bg-[#171a23] dark:text-white/55">
+                        Coming Soon
+                      </span>
+                    )
                   )}
                 </div>
               </div>

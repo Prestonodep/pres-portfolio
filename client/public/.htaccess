@@ -1,0 +1,14 @@
+# Single-page app fallback.
+#
+# Routes such as /work/tuzidi exist only in the client router, so a direct visit or a
+# refresh has to be served index.html rather than a 404. Real files and directories
+# (assets, /tuzidi media) are served as-is.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
