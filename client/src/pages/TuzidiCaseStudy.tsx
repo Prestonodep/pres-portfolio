@@ -9,6 +9,7 @@ ordinary vertical document; the horizontal deck is the landing page's behaviour,
 import { useEffect, useRef } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Moon, SunMedium } from "lucide-react";
 import { Link } from "wouter";
+import { Wordmark } from "@/components/Wordmark";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 
@@ -182,16 +183,8 @@ export default function TuzidiCaseStudy() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="container flex items-center justify-between gap-6 py-4">
-          <Link href="/" className="group inline-flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full border border-primary/30 bg-primary/10 text-sm font-bold text-primary transition-transform duration-300 group-hover:scale-105">
-              P
-            </span>
-            <div>
-              <p className="font-display text-lg font-black tracking-tight text-foreground">Preston Odep</p>
-              <p className="text-[0.68rem] uppercase tracking-[0.26em] text-muted-foreground">
-                Multi-disciplinary designer
-              </p>
-            </div>
+          <Link href="/" aria-label="Preston Odep — back to the portfolio" className="group inline-flex items-center">
+            <Wordmark className="h-9 transition-transform duration-300 group-hover:scale-[1.03]" />
           </Link>
 
           <div className="flex items-center gap-3">
@@ -486,7 +479,7 @@ export default function TuzidiCaseStudy() {
       <footer className="border-t border-border bg-card/60 backdrop-blur-sm">
         <div className="container flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="font-display text-3xl font-black tracking-tight text-card-foreground">Preston.</p>
+            <Wordmark className="h-8" />
             <p className="mt-2 text-sm text-muted-foreground">Designed with intention in Nairobi, Kenya</p>
           </div>
           <p className="text-sm text-muted-foreground">© 2026 Preston Odep. All Rights Reserved.</p>

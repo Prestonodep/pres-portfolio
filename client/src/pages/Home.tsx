@@ -22,6 +22,7 @@ import {
   SunMedium,
 } from "lucide-react";
 import { Link } from "wouter";
+import { Wordmark } from "@/components/Wordmark";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useHorizontalDeck } from "@/hooks/useHorizontalDeck";
 import { cn } from "@/lib/utils";
@@ -317,16 +318,13 @@ export default function Home() {
 
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl lg:fixed lg:inset-x-0 lg:top-0">
         <div className="container flex items-center justify-between gap-6 py-4">
-          <a href="#hero" onClick={(event) => handleJump(event, "hero")} className="group inline-flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full border border-primary/30 bg-primary/10 text-sm font-bold text-primary transition-transform duration-300 group-hover:scale-105">
-              P
-            </span>
-            <div>
-              <p className="font-display text-lg font-black tracking-tight text-foreground">Preston Odep</p>
-              <p className="text-[0.68rem] uppercase tracking-[0.26em] text-muted-foreground">
-                Multi-disciplinary designer
-              </p>
-            </div>
+          <a
+            href="#hero"
+            onClick={(event) => handleJump(event, "hero")}
+            aria-label="Preston Odep — back to top"
+            className="group inline-flex items-center"
+          >
+            <Wordmark className="h-9 transition-transform duration-300 group-hover:scale-[1.03]" />
           </a>
 
           <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground lg:flex">
@@ -982,7 +980,8 @@ export default function Home() {
       <footer className="relative z-40 border-t border-border bg-card/80 backdrop-blur-md lg:fixed lg:inset-x-0 lg:bottom-0">
         <div className="container flex flex-col gap-6 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:py-3">
           <div>
-            <p className="font-display text-3xl font-black tracking-tight text-card-foreground lg:text-xl">Preston.</p>
+            {/* sized so the slim desktop bar keeps the height the deck reserves for it */}
+            <Wordmark className="h-8 lg:h-5" />
             <p className="mt-2 text-sm text-muted-foreground lg:hidden">Designed with intention in Nairobi, Kenya</p>
           </div>
 
