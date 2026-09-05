@@ -80,7 +80,21 @@ function Device({ src, alt, className }: { src: string; alt: string; className?:
 }
 
 /* A browser frame for the desktop captures, so a page screenshot reads as a page. */
-function Browser({ src, alt, className, children }: { src: string; alt: string; className?: string; children?: ReactNode }) {
+function Browser({
+  src,
+  alt,
+  width,
+  height,
+  className,
+  children,
+}: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  className?: string;
+  children?: ReactNode;
+}) {
   return (
     <div className={cn("overflow-hidden rounded-[1rem] bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05),0_30px_70px_-24px_rgba(0,0,0,0.32)]", className)}>
       <div className="flex items-center gap-1.5 bg-[#e9e8e6] px-4 py-3">
@@ -88,14 +102,14 @@ function Browser({ src, alt, className, children }: { src: string; alt: string; 
         <span className="h-2.5 w-2.5 rounded-full bg-[#c9c7c4]" />
         <span className="h-2.5 w-2.5 rounded-full bg-[#c9c7c4]" />
       </div>
-      <img src={img(src)} alt={alt} loading="lazy" className="w-full" />
+      <img src={img(src)} alt={alt} width={width} height={height} loading="lazy" className="w-full" />
       {children}
     </div>
   );
 }
 
 export default function SupaShopperCaseStudy() {
-  useCaseStudyPage("SupaShopper — Case Study · Preston Odep");
+  useCaseStudyPage();
 
   return (
     <CaseStudyLayout>
@@ -106,6 +120,9 @@ export default function SupaShopperCaseStudy() {
           alt="A figure in head-to-toe SupaShopper magenta against a magenta ground, arms outstretched, the wordmark across the back of the jacket, beside the line: M-PESA, but for products."
           width={2000}
           height={1125}
+          /* The hero is this page's largest contentful paint — fetch it ahead of the rest. */
+          fetchPriority="high"
+          decoding="async"
           className="w-full"
         />
       </section>
@@ -292,16 +309,20 @@ export default function SupaShopperCaseStudy() {
           </div>
 
           <div className="mt-16 flex flex-col gap-5">
+            {/* Intrinsic sizes are declared so the browser reserves the box before the file
+                arrives — without them each of these shifts the page as it loads. */}
             {[
-              { src: "supashopper-jacket", alt: "A figure in a magenta shell jacket and bucket hat against a magenta ground, the SupaShopper logotype across the back." },
-              { src: "supahat", alt: "A trucker cap with a white crown, magenta mesh back and magenta brim, carrying the Supa disc mark." },
-              { src: "billboard", alt: "A SupaShopper billboard above a Nairobi dual carriageway, showing the Token and Send Token screens." },
-              { src: "supashopper-college-jackets-youth", alt: "Two young adults in SupaShopper varsity jackets — magenta wool body, white leather sleeves." },
+              { src: "supashopper-jacket", w: 2560, h: 1440, alt: "A figure in a magenta shell jacket and bucket hat against a magenta ground, the SupaShopper logotype across the back." },
+              { src: "supahat", w: 2560, h: 1440, alt: "A trucker cap with a white crown, magenta mesh back and magenta brim, carrying the Supa disc mark." },
+              { src: "billboard", w: 2304, h: 1536, alt: "A SupaShopper billboard above a Nairobi dual carriageway, showing the Token and Send Token screens." },
+              { src: "supashopper-college-jackets-youth", w: 2560, h: 1440, alt: "Two young adults in SupaShopper varsity jackets — magenta wool body, white leather sleeves." },
             ].map((shot) => (
               <img
                 key={shot.src}
                 src={img(shot.src)}
                 alt={shot.alt}
+                width={shot.w}
+                height={shot.h}
                 loading="lazy"
                 className="rise w-full rounded-[2rem] object-cover"
               />
@@ -328,6 +349,8 @@ export default function SupaShopperCaseStudy() {
         <div className="rise mt-16">
           <Browser
             src="d-home"
+            width={2880}
+            height={2200}
             alt="SupaShopper desktop homepage: magenta header, category pills, a promotional carousel and a Most Popular product rail."
           />
         </div>
@@ -392,6 +415,8 @@ export default function SupaShopperCaseStudy() {
                 <div className="min-w-[44rem] lg:min-w-0">
                   <Browser
                     src="d-outlet-scanned"
+                    width={2880}
+                    height={1800}
                     alt="The till terminal showing a Token itemised, with quantity steppers and a total of Kes 2,374."
                   />
                 </div>

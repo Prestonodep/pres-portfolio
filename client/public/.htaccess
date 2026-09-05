@@ -1,14 +1,41 @@
-# Single-page app fallback.
+# Routing for a single-page app that also ships prerendered HTML per route.
 #
-# Routes such as /work/tuzidi exist only in the client router, so a direct visit or a
-# refresh has to be served index.html rather than a 404. Real files and directories
-# (assets, /tuzidi media) are served as-is.
+# The build writes a real file per route — work/tuzidi/index.html and so on — each carrying its
+# own title, description, Open Graph tags and structured data. Those must be served for their
+# URL, because social crawlers never run the JavaScript that would otherwise set them.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  RewriteRule ^index\.html$ - [L]
+  # 1. Serve a route's prerendered file internally. DirectorySlash would otherwise answer
+  #    /work/tuzidi with a 301 to /work/tuzidi/, sending traffic to a URL that disagrees with
+  #    the canonical tag on the page it lands on.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^(.+?)/?$ /$1/index.html [L]
+
+  # 2. Anything else that is not a real file or directory falls through to the app shell,
+  #    which routes it client-side.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_dir.c>
+  DirectorySlash Off
+</IfModule>
+
+# Long-lived caching for fingerprinted build output; HTML must always be revalidated so a
+# deploy is picked up immediately.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|woff2|webp|png|jpg|jpeg|svg|ico|mp4|webm)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|json|txt)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
 </IfModule>

@@ -1,26 +1,18 @@
 import { useEffect } from "react";
 
 /*
-Shared page behaviour for the long-form case studies: reset the scroll position on arrival,
-give the page its own document title, and run the progressive reveal.
+Shared page behaviour for the long-form case studies: reset the scroll position on arrival and
+run the progressive reveal.
 
-The title matters beyond the browser tab — analytics reports by page title, and without this
-every case study would appear in the reports under the landing page's name.
+The document title is deliberately not set here. useSeo owns the whole head — title, canonical,
+Open Graph and structured data — from the route table in shared/seo.ts, so there is one owner
+and the values cannot disagree.
 */
-export function useCaseStudyPage(title: string) {
+export function useCaseStudyPage() {
   // Arriving from the landing deck otherwise keeps the previous scroll position.
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  // Child effects run before the router's, so the title is set before the page view fires.
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = title;
-    return () => {
-      document.title = previousTitle;
-    };
-  }, [title]);
 
   // Nothing is hidden until we know we can reveal it again — see .rise-ready in index.css.
   useEffect(() => {

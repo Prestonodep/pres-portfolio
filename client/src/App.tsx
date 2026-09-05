@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { usePageViews } from "./hooks/usePageViews";
+import { useSeo } from "./hooks/useSeo";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import SupaShopperCaseStudy from "./pages/SupaShopperCaseStudy";
@@ -16,6 +17,9 @@ but preserve switchable dark mode with consistent semantic colors.
 */
 
 function Router() {
+  // Order matters: the head is updated before the page view is reported, so analytics
+  // records the title of the page being entered rather than the one being left.
+  useSeo();
   usePageViews();
 
   return (

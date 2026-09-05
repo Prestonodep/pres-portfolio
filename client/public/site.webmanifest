@@ -1,0 +1,14 @@
+{
+  "name": "Preston Odep — Multi-Disciplinary Designer",
+  "short_name": "Preston Odep",
+  "description": "Product strategy, UI/UX, brand identity and web design from Nairobi, Kenya.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#12151d",
+  "theme_color": "#12151d",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

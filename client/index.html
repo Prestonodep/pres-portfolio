@@ -3,9 +3,9 @@
 
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <!-- maximum-scale removed deliberately: pinning it blocks pinch-zoom, which fails
+         WCAG 1.4.4 and is flagged by Lighthouse accessibility. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B620YPCZPG"></script>
@@ -17,7 +17,42 @@
       gtag('config', 'G-B620YPCZPG');
     </script>
 
-    <title>Preston Odep — Multi-Disciplinary Designer</title>
+    <!--
+      Everything between the seo markers is rewritten per route by scripts/prerender.ts at
+      build time. The values below are the home page's, and are what a crawler sees for "/".
+      Edit shared/seo.ts, not this block.
+    -->
+    <!-- seo:start -->
+    <title>Preston Odep — Product, Brand &amp; UI/UX Designer in Nairobi</title>
+    <meta name="description" content="Multi-disciplinary designer in Nairobi, Kenya. 8+ years across product strategy, UI/UX, brand identity and websites for teams building across Africa." />
+    <link rel="canonical" href="https://preston.medisesession.co.ke/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="Preston Odep" />
+
+    <meta property="og:site_name" content="Preston Odep" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_KE" />
+    <meta property="og:url" content="https://preston.medisesession.co.ke/" />
+    <meta property="og:title" content="Preston Odep — Product, Brand &amp; UI/UX Designer in Nairobi" />
+    <meta property="og:description" content="Multi-disciplinary designer in Nairobi, Kenya. 8+ years across product strategy, UI/UX, brand identity and websites for teams building across Africa." />
+    <meta property="og:image" content="https://preston.medisesession.co.ke/og/preston-odep.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Preston Odep — multi-disciplinary designer, Nairobi, Kenya" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Preston Odep — Product, Brand &amp; UI/UX Designer in Nairobi" />
+    <meta name="twitter:description" content="Multi-disciplinary designer in Nairobi, Kenya. 8+ years across product strategy, UI/UX, brand identity and websites for teams building across Africa." />
+    <meta name="twitter:image" content="https://preston.medisesession.co.ke/og/preston-odep.png" />
+    <meta name="twitter:image:alt" content="Preston Odep — multi-disciplinary designer, Nairobi, Kenya" />
+    <!-- seo:end -->
+
+    <meta name="theme-color" content="#12151d" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -28,10 +63,6 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
   </body>
 
 </html>

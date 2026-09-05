@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# /assets/ is deliberately NOT disallowed. This is a client-rendered site, so Googlebot has to
+# fetch the CSS and JS bundles to see any content at all — blocking them would leave the crawler
+# looking at an empty shell.
+
+Sitemap: https://preston.medisesession.co.ke/sitemap.xml

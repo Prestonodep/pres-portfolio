@@ -2,5 +2,11 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist/public",
   "installCommand": "pnpm install",
-  "rewrites": [{ "source": "/((?!assets/|tuzidi/|supashopper/|brand/).*)", "destination": "/index.html" }]
+  "_comment": "work/ is excluded so the prerendered per-route HTML is served for case studies rather than the generic shell; a rewrite there would cost them their own title, description and share image.",
+  "rewrites": [
+    {
+      "source": "/((?!assets/|og/|brand/|tuzidi/|supashopper/|work/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }

@@ -120,7 +120,7 @@ function Phone({ src, alt, offset }: { src: string; alt: string; offset?: boolea
 }
 
 export default function TuzidiCaseStudy() {
-  useCaseStudyPage("Tuzidi — Case Study · Preston Odep");
+  useCaseStudyPage();
 
   return (
     <CaseStudyLayout>

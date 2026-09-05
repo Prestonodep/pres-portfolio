@@ -441,7 +441,10 @@ export default function Home() {
                   <div className="absolute inset-y-0 right-0 w-full md:w-[76%]">
                     <img
                       src="https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/Presintro_57af09ff.png"
-                      alt="Preston Odep portrait for portfolio hero section"
+                      alt="Preston Odep, multi-disciplinary designer based in Nairobi, Kenya"
+                      /* The landing page's largest contentful paint. */
+                      fetchPriority="high"
+                      decoding="async"
                       className="absolute bottom-0 right-0 h-full w-full object-cover object-center"
                     />
                   </div>

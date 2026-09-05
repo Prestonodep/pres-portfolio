@@ -150,10 +150,16 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+/*
+The scaffolding plugins are development tooling: the Manus runtime alone inlined ~358KB of
+bundled React into every built page, ahead of the app's own bundle, which is render-blocking
+weight on the slow connections this site is meant to be read on. They stay in `vite dev` and
+are dropped from `vite build`.
+*/
+const devOnlyPlugins = [jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
-export default defineConfig({
-  plugins,
+export default defineConfig(({ command }) => ({
+  plugins: [react(), tailwindcss(), ...(command === "build" ? [] : devOnlyPlugins)],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -185,4 +191,4 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-});
+}));
