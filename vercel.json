@@ -2,5 +2,5 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist/public",
   "installCommand": "pnpm install",
-  "rewrites": [{ "source": "/((?!assets/|tuzidi/).*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/((?!assets/|tuzidi/|supashopper/|brand/).*)", "destination": "/index.html" }]
 }

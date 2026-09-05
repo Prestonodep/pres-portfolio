@@ -186,23 +186,23 @@ const caseStudies: CaseStudy[] = [
     imageAlt: "Solutech sales automation website and dashboard preview",
   },
   {
-    id: "supashoppa",
-    eyebrow: "Project 06 · Concept Product",
-    title: "SupaShoppa — Turning Retail Shopping Into a Transferable Digital Asset",
-    role: "Product Strategist · UX Designer",
-    category: "Concept Design · Fintech UX · Retail & Payments",
+    id: "supashopper",
+    eyebrow: "Project 06 · Brand & Product",
+    title: "SupaShopper — M-PESA for Products, Not Money",
+    role: "Founder · Product Design · Build",
+    category: "Brand Identity · Product Design · Front-End & API",
     summary:
-      "SupaShoppa is a mobile-first concept that turns a supermarket purchase into a Token: an itemised, price-locked digital instrument that can be held, sent to another person, or redeemed at any outlet of the partner retailer. In one line, M-PESA for products rather than money.",
+      "SupaShopper turns a supermarket shop into a transferable digital asset. You buy a basket, pay once, and receive a Token: a claim on those exact goods at the price you paid, collectable at any branch of that retailer for eight months. I designed the brand and the product, then built it.",
     problem:
-      "Money sent home for shopping does not reliably become shopping. The payer is rarely the person who needs the goods, cash offers no purpose control while value vouchers offer no product control, and inflation quietly erodes what a transfer buys between the day it is sent and the day it is spent.",
+      "Money sent home does not reliably become food. The person paying is rarely the person shopping, and once cash lands the sender has no say in what it becomes. Delivery solves it in Nairobi and fails upcountry, and Kenyan food inflation quietly erodes whatever was sent between the day it arrives and the day it is spent.",
     approach:
-      "I designed the concept around one loop — shop, tokenise, send, redeem — and a strict rule that a Token's contents can only shrink, never grow. Around that sit the flows that make it survive real retail: partial redemption with a smart remainder when stock runs out, requests so a recipient can propose the basket, group contribution for chama and harambee funding, and QR at the till alongside USSD for feature phones.",
+      "Everything serves one loop — shop, token, send, redeem — and one rule enforced in the data model rather than by convention: a Token's contents can only ever shrink. Around that sit the decisions that make it survive real retail. Partial redemption keeps unavailable items on the Token instead of sending someone away empty-handed. Redemption splits across two devices, so neither a stolen phone nor a dishonest till can complete one alone.",
     outcome:
-      "The concept resolves into four designed surfaces — a consumer app, a cashier redemption portal, a retailer HQ portal, and USSD menu scripts — held together by a documented Token lifecycle, expiry into an equivalent Voucher, and a trust-account settlement model. The design targets were operational: a redemption under a minute at a busy till, on low-end Android, in English and Kiswahili.",
-    impact: ["Product-denominated tokens", "USSD redemption for feature phones", "Sub-60s redemption at the till"],
-    image:
-      "https://d2xsxph8kpxj0f.cloudfront.net/310519663521237002/W5aUirNfyCsTHiTombGsh9/preston-retail-concept-v2-WYJvAsdqRAWzbwbkaWbAwn.webp",
-    imageAlt: "Supermarket aisle used to illustrate the SupaShoppa retail tokenisation concept",
+      "A working prototype across two surfaces: a retailer-aware storefront and a cashier terminal, 19 routes and roughly 13,200 lines. Behind it sits a push-based catalogue API with idempotent, all-or-nothing feeds and append-only price history, because an eight-month price lock is a liability that has to be settled from a record. Payments, auth and SMS are simulated — every screen says so.",
+    impact: ["19 screens · two surfaces", "164 products · two retailers", "0 POS integrations required"],
+    caseUrl: "/work/supashopper",
+    image: "/supashopper/supashopper-jacket-banner.webp",
+    imageAlt: "SupaShopper key art — a figure in head-to-toe magenta, the wordmark across the jacket",
   },
 ];
 
